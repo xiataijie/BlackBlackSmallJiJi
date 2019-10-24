@@ -36,7 +36,6 @@ public class MessageThread implements Runnable {
             //获取客户端的名称 和 IP
             InetAddress inetAddress = socket.getInetAddress();
             String clientName = inetAddress.getHostName();
-            String clientIP = inetAddress.getHostAddress();
 
             //IO流
             DataInputStream inputFromClient = new DataInputStream(socket.getInputStream());
@@ -46,7 +45,10 @@ public class MessageThread implements Runnable {
 
             while (true) {
                 String fromClient = inputFromClient.readUTF();
-                textMessage.append("客户端" + clientName + ";  " + clientIP + "发来消息：" + fromClient);
+                textMessage.append("客户端" + clientName + ":" + socket.getPort() + " 发来消息：" + fromClient);
+
+                //服务端客户端消息
+                outputToClient.writeUTF("服务端已收到消息:" + fromClient);
             }
         } catch (IOException e) {
             e.printStackTrace();

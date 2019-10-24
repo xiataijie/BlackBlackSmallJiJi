@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Map;
 
 public class SendListener implements ActionListener {
 
@@ -14,23 +15,23 @@ public class SendListener implements ActionListener {
     /** 显示消息文本框 **/
     private JTextArea textMessage;
 
-    /** 输出流管道 **/
-    private DataOutputStream outputToClient;
+    Map<String, DataOutputStream> dataOutputStreamMap;
 
 
-    public SendListener(JTextField sendMessageTextField, JTextArea textMessage, DataOutputStream outputToClient) {
+    public SendListener(JTextField sendMessageTextField, JTextArea textMessage, Map<String, DataOutputStream> dataOutputStreamMap) {
         this.sendMessageTextField = sendMessageTextField;
         this.textMessage = textMessage;
-        this.outputToClient = outputToClient;
+        this.dataOutputStreamMap = dataOutputStreamMap;
     }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         try {
-            //向服务器发送消息
-            outputToClient.writeUTF(sendMessageTextField.getText().trim() + '\n');
-            textMessage.append("发送的消息：" + sendMessageTextField.getText().trim() + '\n');
-
+            //发送消息给所有客户端
+            for (DataOutputStream dataOutputStream : dataOutputStreamMap.values()) {
+                dataOutputStream.writeUTF(sendMessageTextField.getText().trim() + '\n');
+                textMessage.append("发送的消息：" + sendMessageTextField.getText().trim() + '\n');
+            }
             //输出后清空输入框
             sendMessageTextField.setText("");
         } catch (IOException e1) {

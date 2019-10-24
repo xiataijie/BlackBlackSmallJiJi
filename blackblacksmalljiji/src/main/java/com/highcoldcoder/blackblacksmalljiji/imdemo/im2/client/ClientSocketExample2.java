@@ -7,9 +7,9 @@ import com.highcoldcoder.blackblacksmalljiji.imdemo.im2.client.eventListener.Sta
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -21,10 +21,10 @@ public class ClientSocketExample2 extends JFrame {
     private JTextField ipTextField = new JTextField();
     private JTextField portTextField = new JTextField();
     private JTextField messageTextField = new JTextField();
-    private DataOutputStream dataOutputStreamToServer ;
-    private DataInputStream dataInputStreamFromServer;
     private JTextArea txtMessage = new JTextArea();
     Socket socket;
+
+    private Map<String,Object> map = new HashMap<>();
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -69,31 +69,31 @@ public class ClientSocketExample2 extends JFrame {
         JButton button = new JButton("连接");
         button.setBounds(80, 50, 80, 20);
         panel.add(button);
+
         JButton button_1 = new JButton("断开");
-        button_1.addActionListener(new CloseListener(txtMessage,dataOutputStreamToServer,dataInputStreamFromServer,socket));
         button_1.setBounds(270, 50, 80, 20);
         panel.add(button_1);
-        JPanel panel_1 = new JPanel();
-        panel_1.setBounds(12, 100, 415, 118);
-        contentPane.add(panel_1);
 
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(10, 110, 416, 120);
+        contentPane.add(scrollPane);
+        scrollPane.setViewportView(txtMessage);
         txtMessage.setBackground(Color.LIGHT_GRAY);
         txtMessage.setColumns(35);
-        txtMessage.setRows(10);
+        txtMessage.setRows(5);
         txtMessage.setTabSize(4);
-
-        panel_1.add(txtMessage);
-
-        messageTextField.addActionListener(new SendListener(messageTextField, txtMessage, dataOutputStreamToServer));
 
         messageTextField.setBounds(20, 245, 300, 25);
         contentPane.add(messageTextField);
         messageTextField.setColumns(10);
         JButton button_2 = new JButton("发送");
-        button_2.addActionListener(new SendListener(messageTextField, txtMessage, dataOutputStreamToServer));
+        button_2.addActionListener(new SendListener(map,messageTextField, txtMessage));
         button_2.setBounds(330, 245, 60, 25);
         contentPane.add(button_2);
-        button.addActionListener(new StartListener(ipTextField, portTextField,dataOutputStreamToServer,dataInputStreamFromServer,txtMessage));
+
+        button.addActionListener(new StartListener(map,ipTextField, portTextField,txtMessage));
+        button_1.addActionListener(new CloseListener(map,txtMessage,socket));
+        messageTextField.addActionListener(new SendListener(map,messageTextField, txtMessage));
     }
 
 

@@ -7,17 +7,18 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Map;
 
 public class SendListener implements ActionListener {
 
     private JTextField messageTextField;
     private JTextArea txtMessage ;
-    private DataOutputStream dataOutputStreamToServer;
+    private Map<String,Object> map;
 
-    public SendListener(JTextField messageTextField, JTextArea txtMessage, DataOutputStream dataOutputStreamToServer) {
+    public SendListener(Map<String,Object> map, JTextField messageTextField, JTextArea txtMessage) {
         this.messageTextField = messageTextField;
         this.txtMessage = txtMessage;
-        this.dataOutputStreamToServer = dataOutputStreamToServer;
+        this.map = map;
     }
 
     @Override
@@ -26,6 +27,7 @@ public class SendListener implements ActionListener {
 
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String time = df.format(Calendar.getInstance().getTime());
+            DataOutputStream dataOutputStreamToServer = (DataOutputStream) map.get("outputStream");
             dataOutputStreamToServer.writeUTF(messageTextField.getText().trim() + '\n');
             txtMessage.append( time + "发送的消息：" + messageTextField.getText().trim() +'\n');
             messageTextField.setText("");

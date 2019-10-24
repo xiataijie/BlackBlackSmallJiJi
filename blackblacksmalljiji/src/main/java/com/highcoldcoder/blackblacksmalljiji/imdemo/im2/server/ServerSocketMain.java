@@ -70,7 +70,6 @@ public class ServerSocketMain extends JFrame {
         JLabel label = new JLabel("端口：");
         label.setBounds(12, 12, 39, 15);
         panel.add(label);
-//        portTextField = new JTextField();
         portTextField.setText("8000");
         portTextField.setBounds(55, 10, 50, 19);
         panel.add(portTextField);
@@ -85,30 +84,30 @@ public class ServerSocketMain extends JFrame {
         button_1.addActionListener(new CloseListener(textMessage, socketMap, dataInputStreamMap));
         button_1.setBounds(300, 7, 70, 25);
         panel.add(button_1);
-        JPanel panel_1 = new JPanel();
-        panel_1.setBounds(0, 69, 416, 170);
-        contentPane.add(panel_1);
-//        textMessage = new JTextArea();
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(0, 69, 416, 170);
+        contentPane.add(scrollPane);
+        scrollPane.setViewportView(textMessage);
+
         textMessage.setTabSize(4);
         textMessage.setRows(11);
         textMessage.setColumns(35);
         textMessage.setBackground(Color.LIGHT_GRAY);
         textMessage.setText("123");
-        panel_1.add(textMessage);
+
         JPanel panel_2 = new JPanel();
         panel_2.setBounds(10, 240, 428, 89);
         contentPane.add(panel_2);
         panel_2.setLayout(null);
-//        sendMessageTextField = new JTextField();
-        sendMessageTextField.addActionListener(new SendListener(sendMessageTextField, textMessage, outputToClient));
+        sendMessageTextField.addActionListener(new SendListener(sendMessageTextField, textMessage, dataOutputStreamMap));
         sendMessageTextField.setBounds(12, 5, 300, 25);
-
 
         panel_2.add(sendMessageTextField);
         sendMessageTextField.setColumns(10);
         JButton button_2 = new JButton("发送");
         button_2.setBounds(324, 5, 70, 25);
         panel_2.add(button_2);
-        button_2.addActionListener(new SendListener(sendMessageTextField, textMessage, outputToClient));
+        button_2.addActionListener(new SendListener(sendMessageTextField, textMessage, dataOutputStreamMap));
     }
 }

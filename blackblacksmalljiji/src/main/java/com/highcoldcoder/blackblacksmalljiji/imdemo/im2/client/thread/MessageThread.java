@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Map;
 
 /**
  * 消息收发线程
@@ -12,20 +13,15 @@ import java.net.Socket;
 public class MessageThread implements Runnable{
 
     /** 显示消息文本框 **/
-    private DataOutputStream dataOutputStreamToServer;
-
-    /** 显示消息文本框 **/
-    private DataInputStream dataInputStreamFromServer;
-
-    /** 显示消息文本框 **/
     JTextArea txtMessage;
 
     Socket socket;
 
+    private Map<String,Object> map;
 
-    public MessageThread(DataOutputStream dataOutputStreamToServer, DataInputStream dataInputStreamFromServer, JTextArea txtMessage, Socket socket) {
-        this.dataOutputStreamToServer = dataOutputStreamToServer;
-        this.dataInputStreamFromServer = dataInputStreamFromServer;
+
+    public MessageThread( Map<String,Object> map, JTextArea txtMessage, Socket socket) {
+        this.map = map;
         this.txtMessage = txtMessage;
         this.socket = socket;
     }
@@ -33,10 +29,8 @@ public class MessageThread implements Runnable{
     @Override
     public void run(){
         try {
-            dataInputStreamFromServer = new DataInputStream(socket.getInputStream());
-            dataOutputStreamToServer = new DataOutputStream(socket.getOutputStream());
             while(true){
-                String fromStr = dataInputStreamFromServer.readUTF();
+                String fromStr = ((DataInputStream) map.get("inputStream")).readUTF();
                 txtMessage.append("服务端发来消息：" +fromStr);
             }
         } catch (IOException e) {
