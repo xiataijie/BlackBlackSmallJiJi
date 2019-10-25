@@ -1,4 +1,4 @@
-package com.highcoldcoder.blackblacksmalljiji.imdemo.im2.client.thread;
+package com.highcoldcoder.blackblacksmalljiji.imdemo.im3.client.thread;
 
 import javax.swing.*;
 import java.io.DataInputStream;
