@@ -42,7 +42,7 @@ public class AcceptThread implements Runnable {
                 Socket socket = serverSocket.accept();
                 System.out.println("接收客户端请求：" + socket);
 
-                socketMap.put(socket.getInetAddress() + ":" + socket.getPort(), socket);
+                socketMap.put(String.valueOf(socket.getPort()), socket);
                 System.out.println("在线客户端数量：" + socketMap.size());
 
                 textMessage.append("接收客户端请求：" + socket + '\n');

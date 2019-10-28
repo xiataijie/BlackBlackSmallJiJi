@@ -1,6 +1,7 @@
 package com.highcoldcoder.blackblacksmalljiji.imdemo.im4.client.thread;
 
 import com.highcoldcoder.blackblacksmalljiji.imdemo.im4.common.Constant;
+import org.springframework.util.StringUtils;
 
 import javax.swing.*;
 import java.io.DataInputStream;
@@ -32,29 +33,16 @@ public class MessageThread implements Runnable{
         try {
             while(true){
                 String fromStr = ((DataInputStream) map.get("inputStream")).readUTF();
-                txtMessage.append("服务端发来消息：" +fromStr);
+                txtMessage.append("服务端发来消息：" + fromStr);
 
                 if (Constant.SERVER_CLOSE_OK.equals(fromStr)) {
-                    while (fromStr == null) {
-                        ((DataInputStream) map.get("inputStream")).close();
-                        socket.close();
-                    }
+                    socket.shutdownInput();
+                    socket.close();
+                    System.out.println("socket 执行关闭...");
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-
-            try {
-                if (socket != null) {
-                    socket.close();
-                }
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
         }
     }
 }

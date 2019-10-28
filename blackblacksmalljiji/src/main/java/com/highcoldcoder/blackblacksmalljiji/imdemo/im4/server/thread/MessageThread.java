@@ -5,7 +5,7 @@ import com.highcoldcoder.blackblacksmalljiji.imdemo.im4.common.Constant;
 import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.EOFException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
@@ -44,52 +44,39 @@ public class MessageThread implements Runnable {
         try {
             inputFromClient = new DataInputStream(socket.getInputStream());
             outputToClient = new DataOutputStream(socket.getOutputStream());
-            dataInputStreamMap.put(socket.getInetAddress() + ":" + socket.getPort(), inputFromClient);
-            dataOutputStreamMap.put(socket.getInetAddress() + ":" + socket.getPort(), outputToClient);
+            dataInputStreamMap.put(String.valueOf(socket.getPort()), inputFromClient);
+            dataOutputStreamMap.put(String.valueOf(socket.getPort()), outputToClient);
 
             while (true) {
                 String fromClient = inputFromClient.readUTF();
                 textMessage.append("客户端" + clientName + ":" + socket.getPort() + " 发来消息：" + fromClient);
+
                 /**  收到客户端关闭请求，则等待数据接收完毕，然后断开接收管道流 **/
                 if (fromClient.equals(Constant.CLIENT_CLOSE_ME)) {
-                    while (fromClient == null) {
-                        inputFromClient.close();
 
-                        outputToClient.writeUTF("服务端已停止接收消息，关闭成功:" + Constant.SERVER_CLOSE_OK);
-                        outputToClient.flush();
-                        outputToClient.close();
+                    outputToClient.writeUTF("服务端已停止接收消息，关闭成功!请留意标识符SERVER_CLOSE_OK确认...");
+                    outputToClient.writeUTF(Constant.SERVER_CLOSE_OK);
 
-                        socket.close();
-                    }
+                    System.out.println("[start]服务器执行关闭socket、管道流...");
+                    socket.shutdownInput();
+                    System.out.println("[end]服务器执行关闭socket、管道流...");
+
+                    System.out.println("[start]服务器执行删除容器里的socket、管道流...");
+                    dataInputStreamMap.remove(String.valueOf(socket.getPort()));
+                    dataOutputStreamMap.remove(String.valueOf(socket.getPort()));
+                    socketMap.remove(String.valueOf(socket.getPort()));
+                    System.out.println("[end]服务器执行删除容器里的socket、管道流...");
+
+                    System.out.println("socketMap容器 : " + socketMap.entrySet());
+                } else {
+                    //服务端客户端消息
+                    outputToClient.writeUTF("服务端已收到消息:" + fromClient);
                 }
-//            客户端收到断开完毕标识符”SERVER_CLOSE_OK“，然后关闭socket、流
-
-                //服务端客户端消息
-                outputToClient.writeUTF("服务端已收到消息:" + fromClient);
             }
-        } catch (IOException e) {
+        } catch (EOFException e) {
+            System.out.println("管道流关闭完成！");
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-
-            try {
-                if (inputFromClient != null) {
-                    inputFromClient.close();
-                    dataInputStreamMap.remove(socket.getInetAddress() + ":" + socket.getPort());
-                }
-
-                if (outputToClient != null) {
-                    outputToClient.close();
-                    dataOutputStreamMap.remove(socket.getInetAddress() + ":" + socket.getPort());
-                }
-
-                if (socket != null) {
-                    socket.close();
-                    socketMap.remove(socket.getInetAddress() + ":" + socket.getPort());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
         }
     }
 }

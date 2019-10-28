@@ -43,7 +43,7 @@ public class StartListener implements ActionListener {
             map.put("outputStream", dataOutputStreamToServer);
             System.out.println(map.entrySet());
 
-            MessageThread messageThread = new MessageThread(map, txtMessage,socket);
+            MessageThread messageThread = new MessageThread(map, txtMessage, socket);
             Thread thread = new Thread(messageThread);
             thread.start();
         } catch (IOException e1) {

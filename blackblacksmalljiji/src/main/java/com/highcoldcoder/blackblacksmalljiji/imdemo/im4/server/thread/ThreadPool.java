@@ -83,10 +83,13 @@ public class ThreadPool extends ThreadGroup{
 
         @Override
         public void run() {
+
             while (!isInterrupted()) {
+
                 Runnable task = null;
                 try {
                     task = getTask();
+                    System.out.println(task);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -94,12 +97,12 @@ public class ThreadPool extends ThreadGroup{
                 if (task == null) {
                     return;
                 }
-
                 try {
                     task.run();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
             }
         }
     }
