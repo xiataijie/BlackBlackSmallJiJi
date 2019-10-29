@@ -14,6 +14,7 @@ public class Constant {
      */
     public static final String SERVER_CLOSE_ING = "SERVER_CLOSE_ING";
     public static final String SERVER_CLOSE_OK = "SERVER_CLOSE_OK";
+    public static final String SHUTDOWN = "SHUTDOWN";
 
 
     /**
@@ -21,5 +22,6 @@ public class Constant {
      */
     public static final String DATA_OUTPUT_STREAM_TO_SERVER = "DATA_OUTPUT_STREAM_TO_SERVER";
     public static final String DATA_INPUT_STREAM_FROM_CLIENT = "DATA_INPUT_STREAM_FROM_CLIENT";
+
 
 }
