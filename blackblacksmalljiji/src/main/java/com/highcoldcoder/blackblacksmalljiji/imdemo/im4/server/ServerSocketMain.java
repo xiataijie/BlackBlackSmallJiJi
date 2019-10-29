@@ -1,5 +1,6 @@
 package com.highcoldcoder.blackblacksmalljiji.imdemo.im4.server;
 
+import com.highcoldcoder.blackblacksmalljiji.imdemo.im4.common.Constant;
 import com.highcoldcoder.blackblacksmalljiji.imdemo.im4.server.eventListener.CloseListener;
 import com.highcoldcoder.blackblacksmalljiji.imdemo.im4.server.eventListener.SendListener;
 import com.highcoldcoder.blackblacksmalljiji.imdemo.im4.server.eventListener.StartListener;
@@ -42,6 +43,7 @@ public class ServerSocketMain extends JFrame {
     private Map<String, Socket> socketMap = new HashMap();
     private Map<String, DataInputStream> dataInputStreamMap = new HashMap();
     private Map<String, DataOutputStream> dataOutputStreamMap = new HashMap();
+    private Map<String, Boolean> shutdownMap = new HashMap<>(1);
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -57,6 +59,9 @@ public class ServerSocketMain extends JFrame {
     }
 
     public ServerSocketMain() {
+
+        shutdownMap.put(Constant.SHUTDOWN, false);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 450, 350);
         contentPane = new JPanel();
@@ -78,10 +83,10 @@ public class ServerSocketMain extends JFrame {
         JButton button = new JButton("启动");
         button.setBounds(200, 7, 70, 25);
         panel.add(button);
-        button.addActionListener(new StartListener(textMessage, portTextField, serverSocket, socketMap, dataInputStreamMap, dataOutputStreamMap));
+        button.addActionListener(new StartListener(textMessage, portTextField, serverSocket, socketMap, dataInputStreamMap, dataOutputStreamMap, shutdownMap));
 
         JButton button_1 = new JButton("停止");
-        button_1.addActionListener(new CloseListener(textMessage, socketMap, dataInputStreamMap));
+        button_1.addActionListener(new CloseListener(textMessage, socketMap, dataInputStreamMap, shutdownMap));
         button_1.setBounds(300, 7, 70, 25);
         panel.add(button_1);
 
