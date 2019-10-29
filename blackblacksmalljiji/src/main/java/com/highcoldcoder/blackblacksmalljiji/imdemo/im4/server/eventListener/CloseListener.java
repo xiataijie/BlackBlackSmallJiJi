@@ -29,14 +29,6 @@ public class CloseListener implements ActionListener {
         try {
             for (Map.Entry<String, Socket> entry : socketMap.entrySet()) {
 
-                String key = entry.getKey();
-                Socket socket = entry.getValue();
-                dataInputStreamMap.get(key).close();
-                dataInputStreamMap.get(key).close();
-                socket.close();
-                textMessage.append(entry.getKey() + "输入管道连接已断开～～～" + '\n');
-                textMessage.append(entry.getKey() + "输出管道连接已断开～～～" + '\n');
-                textMessage.append(entry.getKey() + "Socket连接已断开～～～" + '\n');
             }
             textMessage.append("全部连接已断开～～～" + '\n');
         } catch (Exception e2) {
