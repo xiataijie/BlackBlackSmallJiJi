@@ -41,20 +41,16 @@ public class AcceptThread implements Runnable {
 
     @Override
     public void run() {
-
         // 初始化线程池大小，并启动线程
         ThreadPool threadPool = new ThreadPool(4);
-
         while (!shutdownMap.get(Constant.SHUTDOWN)) {
             try {
                 Socket socket = serverSocket.accept();
-
                 /** 禁止关闭后，因为阻塞而最后一次请求被通过 **/
                 if (!shutdownMap.get(Constant.SHUTDOWN)) {
                     socketMap.put(String.valueOf(socket.getPort()), socket);
                     textMessage.append("接收客户端请求：" + socket + '\n');
                     textMessage.append("在线客户端数量：" + socketMap.size() + '\n');
-
                     //任务存放至线程池
                     MessageThread messageThread = new MessageThread(textMessage, socket, socketMap, dataInputStreamMap, dataOutputStreamMap, shutdownMap);
                     threadPool.addTask(messageThread);
@@ -63,13 +59,13 @@ public class AcceptThread implements Runnable {
                 System.out.println(ex);
             }
         }
-
         try {
-            System.out.println("serverSocket 执行关闭...");
             serverSocket.close();
+            textMessage.append("serverSocket 执行关闭..." + '\n');
+            threadPool.close();
+            textMessage.append("threadPool 线程池执行关闭..." + '\n');
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

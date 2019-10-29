@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Map;
@@ -34,17 +35,21 @@ public class MessageThread implements Runnable{
         try {
             while(true){
                 String fromStr = ((DataInputStream) map.get("inputStream")).readUTF();
-                txtMessage.append("服务端发来消息：" + fromStr);
+                txtMessage.append("服务端发来消息：" + fromStr + '\n');
                 if (Constant.SERVER_CLOSE_OK.equals(fromStr)) {
                     socket.shutdownInput();
-                    System.out.println("SERVER_CLOSE_OK 执行关闭...");
+                    System.out.println("SERVER_CLOSE_OK 执行关闭..." + '\n');
                 }
                 if (Constant.SERVER_CLOSE_ING.equals(fromStr)) {
-                    txtMessage.append("客户端返回关闭确认： CLIENT_CLOSE_OK");
+                    txtMessage.append("客户端返回关闭确认： CLIENT_CLOSE_OK" + '\n');
                     new DataOutputStream(socket.getOutputStream()).writeUTF(Constant.CLIENT_CLOSE_OK);
                     socket.shutdownInput();
                 }
             }
+        } catch (EOFException e) {
+
+            txtMessage.append("客户端关闭完成" + '\n');
+
         } catch (IOException e) {
             e.printStackTrace();
         }
